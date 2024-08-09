@@ -25,10 +25,14 @@ if __name__ == "__main__":
     b = torch.add(w, 1)  # retain_grad()
     y = torch.mul(a, b)
 
-    y.backward()
+    # 在计算过程中动态搭建计算图，同时针对每个tensor存储计算梯度必备的grad_fn
+    #  调用backward时自动反向传播计算计算图中所有梯度（自动求导机制）
+    y.backward() 
     print(w.grad)
 
-    # 查看叶子结点
+    # 查看叶子结点 
+    # w,x作为运算的开始是叶子节点，梯度得到保留
+    # 其他变量xsby作为中间变量不是叶子节点，梯度在方向传播后不保留
     print("is_leaf:\n", w.is_leaf, x.is_leaf, a.is_leaf, b.is_leaf, y.is_leaf)
     # 查看梯度
     print("gradient:\n", w.grad, x.grad, a.grad, b.grad, y.grad)

@@ -109,7 +109,7 @@ def main():
         for data, labels in train_loader:
             # forward & backward
             outputs = model(data)
-            optimizer.zero_grad()
+            optimizer.zero_grad() #梯度会累积，需要在下次backward前清楚上次的梯度
 
             # loss 计算
             loss = loss_f(outputs, labels)
