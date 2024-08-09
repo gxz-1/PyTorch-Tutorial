@@ -13,7 +13,7 @@ import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 import torchvision.transforms as transforms
 from PIL import Image
-
+20210323
 
 def main():
     # 思考：如何实现你的模型训练？第一步干什么？第二步干什么？...第n步...
@@ -70,7 +70,7 @@ def main():
                              for i in txt_data]
     # you can download the datasets from
     # https://pan.baidu.com/s/18BsxploWR3pbybFtNsw5fA  code：pyto
-    root_dir = r"E:\pytorch-tutorial-2nd\data\datasets\covid-19-demo"  # path to datasets——covid-19-demo
+    root_dir = "dataset/covid-19-demo"  # path to datasets——covid-19-demo
     img_dir = os.path.join(root_dir, "imgs")
     path_txt_train = os.path.join(root_dir, "labels", "train.txt")
     path_txt_valid = os.path.join(root_dir, "labels", "valid.txt")
