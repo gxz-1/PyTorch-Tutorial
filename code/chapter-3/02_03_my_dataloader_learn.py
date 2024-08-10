@@ -24,7 +24,10 @@ class ImageNet(Dataset):
 
     def readDataset(self):
         # dir：当前目录 subdirs：dir的子目录 files：dir的子文件 
-        for dir,subdirs,files in os.walk(os.path.join(self.dataset_dir,self.type)):
+        root_dir = os.path.join(self.dataset_dir,self.type)
+        for dir,subdirs,files in os.walk(root_dir):
+            if dir != root_dir: #遍历子目录由subdirs进行，dir不再进行
+                break
             for subdir in subdirs:
                 label=self.label_map[subdir]
                 for _,_,imgs in os.walk(os.path.join(dir,subdir)):
@@ -49,11 +52,9 @@ if __name__=="__main__":
     train_dataset=ImageNet("dataset/mini-hymenoptera_data","train")
     val_dataset=ImageNet("dataset/mini-hymenoptera_data","val")
     # Dataset类实现__getitem__和__len__方法提供给Dataloader加载数据
-    print(train_dataset.__len__())
     # num_workers：cpu加载数据的核心数
     # 通常加载使用cpu，在训练循环中，可以在获取批量数据后使用to(device移动到 GPU 上
     train_loader=DataLoader(train_dataset,batch_size=2,shuffle=True,num_workers=6)
-    print(val_dataset.__len__())
     val_loader=DataLoader(val_dataset,batch_size=2,shuffle=True,drop_last=True,num_workers=6)
     #查看第i个batch的数据size
     for i,(img,label) in enumerate(train_loader):
