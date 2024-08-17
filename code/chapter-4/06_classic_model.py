@@ -10,6 +10,13 @@ import torch
 import torch.nn as nn
 from torchvision import models
 
+import argparse
+parser=argparse.ArgumentParser()
+parser.add_argument("--name",type=str,help="输入名字",default='Tom')
+args=parser.parse_args()
+print(args.name)
+
+
 model_alexnet = models.alexnet()
 
 model_vgg16 = models.vgg16()

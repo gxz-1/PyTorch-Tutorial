@@ -118,12 +118,12 @@ def gen_cam(feature_map, grads):
     :param grads: np.array， in [C, H, W]
     :return: np.array, [H, W]
     """
-    cam = np.zeros(feature_map.shape[1:], dtype=np.float32)  # cam shape (H, W)
+    cam = np.zeros(feature_map.shape[1:], dtype=np.float32)  # 初始化 H*W 的图像
 
-    weights = np.mean(grads, axis=(1, 2))  #
+    weights = np.mean(grads, axis=(1, 2))  # 对(C H W)的每个通道C求平均，作为每个通道的权重w
 
     for i, w in enumerate(weights):
-        cam += w * feature_map[i, :, :]
+        cam += w * feature_map[i, :, :] #将权重w与每个通道的图像相乘，并对通道求和
 
     cam = np.maximum(cam, 0)
     cam = cv2.resize(cam, (32, 32))
@@ -135,7 +135,8 @@ def gen_cam(feature_map, grads):
 
 if __name__ == '__main__':
 
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    # BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    BASE_DIR='dataset'
     # you can download the datasets from
     # https://pan.baidu.com/s/1eDwZchwp6P1Ab9d8Qn6rbA   code：l8qe
     path_img = os.path.join(BASE_DIR, "grad_cam_data", "cam_img", "test_img_8.png")
