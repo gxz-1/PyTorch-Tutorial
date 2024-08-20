@@ -54,7 +54,7 @@ if __name__ == "__main__":
     print("\n手动计算，第一个样本的loss:{}".format(loss_1))
 
     # ----------------------- weight ------------------------------------
-    weight = torch.from_numpy(np.array([0.6, 0.2, 0.2])).float()
+    weight = torch.from_numpy(np.array([0.6, 0.2, 0.2])).float()#给三分类设置不同的权重weight
     loss_f = nn.CrossEntropyLoss(weight=weight, reduction="none")
     output = torch.ones(2, 3, requires_grad=True) * 0.5  # 假设一个三分类任务，batchsize为2个，假设每个神经元输出都为0.5
     target = torch.from_numpy(np.array([0, 1])).type(torch.LongTensor)
