@@ -99,6 +99,7 @@ def main():
     # step 3/4 : 优化模块
     loss_f = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4)
+    # w_1 = w_0 - (lr*(w_grad + weight_decay*w_0))=w_0*(1-lr*weight_decay)-lr*w_grad
     scheduler = optim.lr_scheduler.StepLR(optimizer, gamma=0.1, step_size=50)
     # step 4/4 : 迭代模块
     for epoch in range(100):

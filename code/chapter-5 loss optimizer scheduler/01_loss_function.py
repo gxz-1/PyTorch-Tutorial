@@ -16,6 +16,7 @@ if __name__ == "__main__":
 
     params = "none mean sum".split()
 
+    #reduction:mean（对一批数据取平均） sum（求和） one（保持原始值）
     for p in params:
         loss_func = nn.L1Loss(reduction=p)
         loss_tmp = loss_func(output, target)
@@ -36,6 +37,7 @@ if __name__ == "__main__":
     for p in params:
         loss_func = nn.CrossEntropyLoss(reduction=p)
         loss_tmp = loss_func(output, target)
+        # 交叉熵中target需要的是int类型的index（从0开始），不需要one-hot向量形式
         print("reduction={}:loss={}, shape:{}".format(p, loss_tmp, loss_tmp.shape))
 
     # ----------------------- 手动计算 ------------------------------------

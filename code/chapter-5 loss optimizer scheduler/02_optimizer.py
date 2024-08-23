@@ -8,9 +8,14 @@
 import torch
 import torch.optim as optim
 
+# 0.通过定义的损失函数求出模型的loss
+# 1.通过loss.backward（）进行反向传播（利用pytorch的autograd机制）获得梯度
+# 2.通过optimizer.step()优化器进行参数更新
 
 if __name__ == "__main__":
     # =================================== 参数组 ========================================
+    # 参数组表明可以将所有参数进行分组，区别对待
+    # 如：在finetune过程中，通常让前面层的网络采用较小的学习率，后面几层全连接层采用较大的学习率
     w1 = torch.randn(2, 2)
     w1.requires_grad = True
 
@@ -32,6 +37,7 @@ if __name__ == "__main__":
     print(optimizer_2.param_groups)
 
     # =================================== zero_grad ========================================
+    # 由于pytorch会累加梯度，在loss.backward()反向传播前需要手动清零之前的梯度
     print("\n\n")
     w1 = torch.randn(2, 2)
     w1.requires_grad = True
