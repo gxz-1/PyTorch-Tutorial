@@ -34,23 +34,27 @@ if __name__ == "__main__":
     resnet_50_new.load_state_dict(state_dict)
     print("加载后: ", resnet_50_new.conv1.weight[0, ...])
 
+    # 上面的代码中只保存了model.param信息
+    # 下面的例子还保存了优化器的参数、学习率调整器的参数和迭代次数
+    # 推荐在训练时，采用以下代码段进行模型保存
     # ========================================= torchvision scripts ==============================================
     # https://github.com/pytorch/vision/blob/fa347eb9f38c1759b73677a11b17335191e3f602/references/classification/train.py
-    # checkpoint = {
-    #     "model": model_without_ddp.state_dict(),
-    #     "optimizer": optimizer.state_dict(),
-    #     "lr_scheduler": lr_scheduler.state_dict(),
-    #     "epoch": epoch,
-    # }
-    # path_save = "model_{}.pth".format(epoch)
-    # torch.save(checkpoint, path_save)
+    checkpoint = {
+        "model": model_without_ddp.state_dict(),
+        "optimizer": optimizer.state_dict(),
+        "lr_scheduler": lr_scheduler.state_dict(),
+        "epoch": epoch,
+    }
+    path_save = "model_{}.pth".format(epoch)
+    torch.save(checkpoint, path_save)
     # # ========================================= resume ==============================================
     # # resume
-    # checkpoint = torch.load(path_save, map_location="cpu")
-    # model.load_state_dict(checkpoint["model"])
-    # optimizer.load_state_dict(checkpoint["optimizer"])
-    # lr_scheduler.load_state_dict(checkpoint["lr_scheduler"])
-    # start_epoch = checkpoint["epoch"] + 1
+    checkpoint = torch.load(path_save, map_location="cpu")
+    #map_location指定从硬盘加载到内存或显存
+    model.load_state_dict(checkpoint["model"])
+    optimizer.load_state_dict(checkpoint["optimizer"])
+    lr_scheduler.load_state_dict(checkpoint["lr_scheduler"])
+    start_epoch = checkpoint["epoch"] + 1
 
 
 
