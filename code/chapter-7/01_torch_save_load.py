@@ -36,7 +36,7 @@ if __name__ == "__main__":
 
     # 上面的代码中只保存了model.param信息
     # 下面的例子还保存了优化器的参数、学习率调整器的参数和迭代次数
-    # 推荐在训练时，采用以下代码段进行模型保存
+    # ***推荐在训练时，采用以下代码段进行模型保存
     # ========================================= torchvision scripts ==============================================
     # https://github.com/pytorch/vision/blob/fa347eb9f38c1759b73677a11b17335191e3f602/references/classification/train.py
     checkpoint = {

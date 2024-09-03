@@ -28,16 +28,16 @@ def get_args_parser(add_help=True):
 
     parser = argparse.ArgumentParser(description="PyTorch Classification Training", add_help=add_help)
 
-    parser.add_argument("--data-path", default=r"G:\deep_learning_data\chest_xray", type=str, help="dataset path")
-    parser.add_argument("--model", default="convnext-tiny", type=str,
+    parser.add_argument("--data-path", default="dataset/chest_xray", type=str, help="dataset path")
+    parser.add_argument("--model", default="resnet50", type=str,
                         help="model name; resnet50/convnext/convnext-tiny")
     parser.add_argument("--device", default="cuda", type=str, help="device (Use cuda or cpu Default: cuda)")
     parser.add_argument(
-        "-b", "--batch-size", default=8, type=int, help="images per gpu, the total batch size is $NGPU x batch_size"
+        "-b", "--batch-size", default=64, type=int, help="images per gpu, the total batch size is $NGPU x batch_size"
     )
-    parser.add_argument("--epochs", default=50, type=int, metavar="N", help="number of total epochs to run")
+    parser.add_argument("--epochs", default=30, type=int, metavar="N", help="number of total epochs to run")
     parser.add_argument(
-        "-j", "--workers", default=4, type=int, metavar="N", help="number of data loading workers (default: 4)"
+        "-j", "--workers", default=12, type=int, metavar="N", help="number of data loading workers (default: 4)"
     )
     parser.add_argument("--opt", default="sgd", type=str, help="optimizer")
     parser.add_argument("--random-seed", default=42, type=int, help="random seed")
@@ -55,17 +55,17 @@ def get_args_parser(add_help=True):
     parser.add_argument("--lr-step-size", default=20, type=int, help="decrease lr every step-size epochs")
     parser.add_argument("--lr-gamma", default=0.1, type=float, help="decrease lr by a factor of lr-gamma")
     parser.add_argument("--print-freq", default=20, type=int, help="print frequency")
-    parser.add_argument("--output-dir", default="./Result", type=str, help="path to save outputs")
+    parser.add_argument("--output-dir", default="code/chapter-8/01_classification/Result", type=str, help="path to save outputs")
     parser.add_argument("--resume", default="", type=str, help="path of checkpoint")
     parser.add_argument("--start-epoch", default=0, type=int, metavar="N", help="start epoch")
     parser.add_argument('--autoaug', action='store_true', default=False, help='use torchvision autoaugment')
-    parser.add_argument('--useplateau', action='store_true', default=False, help='use torchvision autoaugment')
+    parser.add_argument('--useplateau', action='store_true', default=False, help='use torchvision autoaugment') # store_trur表示T/F参数
 
     return parser
 
 
 def main(args):
-    device = args.device
+    device = torch.device(args.device)
     data_dir = args.data_path
     result_dir = args.output_dir
     # ------------------------------------  log ------------------------------------
@@ -102,6 +102,7 @@ def main(args):
     valid_loader = DataLoader(dataset=valid_set, batch_size=8, num_workers=args.workers)
 
     # ------------------------------------ tep2: model ------------------------------------
+    # 基于CNN的模型，可以通过torchvision直接创建，并且加载imagenet的预训练参数。
     if args.model == 'resnet50':
         model = torchvision.models.resnet50(pretrained=True)
     elif args.model == 'convnext':
@@ -124,8 +125,8 @@ def main(args):
         num_kernel = 128 if args.model == 'convnext' else 96
         model.features[0][0] = nn.Conv2d(1, num_kernel, (4, 4), stride=(4, 4))  # convnext base/ tiny
         # 替换最后一层
-        num_ftrs = model.classifier[2].in_features
-        model.classifier[2] = nn.Linear(num_ftrs, 2)
+        num_ftrs = model.classifier[2].in_features #1.拿到线性层的输入维度num_ftrs
+        model.classifier[2] = nn.Linear(num_ftrs, 2) #2.线性层改为num_ftrs*2大小
 
     model.to(device)
 
@@ -216,5 +217,4 @@ classes = ["NORMAL", "PNEUMONIA"]
 if __name__ == "__main__":
     args = get_args_parser().parse_args()
     utils.setup_seed(args.random_seed)
-    args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     main(args)

@@ -24,7 +24,6 @@ class PneumoniaDataset(Dataset):
         self.root_dir = root_dir
         self.transform = transform
         self.img_info = []  # [(path, label), ... , ]
-        self.label_array = None
         # 由于标签信息是string，需要一个字典转换为模型训练时用的int类型
         self.str_2_int = {"NORMAL": 0, "PNEUMONIA": 1}
 
@@ -37,7 +36,7 @@ class PneumoniaDataset(Dataset):
         :return:
         """
         path_img, label = self.img_info[index]
-        img = Image.open(path_img).convert('L')
+        img = Image.open(path_img).convert('L') # 转成灰度图
 
         if self.transform is not None:
             if 'albumentations' in str(type(self.transform)):
@@ -69,16 +68,18 @@ class PneumoniaDataset(Dataset):
                     self.img_info.append((path_img, label_int))
 
 
+#用于测试数据集读取的功能是否正确
 if __name__ == "__main__":
-    root_dir_train = r"G:\deep_learning_data\chest_xray\train"  # path to your data
-    root_dir_valid = r"G:\deep_learning_data\chest_xray\test"   # path to your data
+    root_dir_train = r"dataset\chest_xray\train"  # path to your data
+    root_dir_valid = r"dataset\chest_xray\test"   # path to your data
 
+    # 定义transform 
     normMean = [0.5]
     normStd = [0.5]
     normTransform = transforms.Normalize(normMean, normStd)
     train_transform = transforms.Compose([
         transforms.Resize(256),
-        transforms.RandomCrop(224, padding=4),
+        transforms.RandomCrop(224, padding=4), # 随机裁剪至224并在四周填充4个像素
         transforms.ToTensor(),
         normTransform
     ])
